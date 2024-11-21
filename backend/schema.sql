@@ -1,0 +1,4 @@
+CREATE TABLE IF NOT EXISTS tickets (
+  id SERIAL PRIMARY KEY,
+  customer_email VARCHAR(140) NOT NULL,
+  subject VARCHAR(160) NOT NULL,
