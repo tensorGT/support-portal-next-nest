@@ -1,3 +1,6 @@
 {
   "name": "ticketing-backend",
   "version": "0.1.0",
+  "scripts": { "build": "tsc", "start": "node dist/main.js" },
+  "dependencies": {
+    "@nestjs/common": "^10.4.0",
