@@ -31,3 +31,19 @@ class TicketsController {
       await pool.query(
         "INSERT INTO tickets (customer_email, subject, priority) VALUES ($1, $2, $3) RETURNING *",
         [body.email, body.subject, body.priority || "normal"]
+      )
+    ).rows[0];
+    await pool.query("INSERT INTO ticket_messages (ticket_id, author_role, body) VALUES ($1, 'customer', $2)", [
+      t.id,
+      body.message,
+    ]);
+    await pool.query("INSERT INTO ticket_audit (ticket_id, event) VALUES ($1, 'ticket_created')", [t.id]);
+    return t;
+  }
+
+  @Post(":id/reply")
+  async reply(@Param("id") id: string, @Body() body: { role: "customer" | "agent"; message: string }) {
+    return (
+      await pool.query(
+        "INSERT INTO ticket_messages (ticket_id, author_role, body) VALUES ($1, $2, $3) RETURNING *",
+        [Number(id), body.role, body.message]

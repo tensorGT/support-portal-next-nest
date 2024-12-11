@@ -7,3 +7,8 @@ CREATE TABLE IF NOT EXISTS tickets (
   assigned_agent VARCHAR(100),
   created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
+
+CREATE TABLE IF NOT EXISTS ticket_messages (
+  id SERIAL PRIMARY KEY,
+  ticket_id INTEGER NOT NULL REFERENCES tickets(id) ON DELETE CASCADE,
+  author_role VARCHAR(20) NOT NULL CHECK (author_role IN ('customer', 'agent')),

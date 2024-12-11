@@ -15,3 +15,11 @@ export default function SupportPortal() {
   const [status, setStatus] = useState("");
 
   useEffect(() => {
+    const q = status ? `?status=${status}` : "";
+    fetch(`http://localhost:4021/tickets${q}`)
+      .then((r) => (r.ok ? r.json() : []))
+      .then(setTickets)
+      .catch(() => {});
+  }, [status]);
+
+  return (
