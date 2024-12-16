@@ -47,3 +47,20 @@ class TicketsController {
       await pool.query(
         "INSERT INTO ticket_messages (ticket_id, author_role, body) VALUES ($1, $2, $3) RETURNING *",
         [Number(id), body.role, body.message]
+      )
+    ).rows[0];
+  }
+
+  @Patch(":id/assign")
+  async assign(
+    @Param("id") id: string,
+    @Headers("x-role") role: string,
+    @Body() body: { agent: string; status?: string }
+  ) {
+    if (role !== "agent") throw new ForbiddenException("only agent can assign ticket");
+    const updated = (
+      await pool.query("UPDATE tickets SET assigned_agent = $1, status = COALESCE($2, status) WHERE id = $3 RETURNING *", [
+        body.agent,
+        body.status || null,
+        Number(id),
+      ])
