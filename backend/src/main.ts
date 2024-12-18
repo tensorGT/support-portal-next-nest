@@ -64,3 +64,20 @@ class TicketsController {
         body.status || null,
         Number(id),
       ])
+    ).rows[0];
+    await pool.query("INSERT INTO ticket_audit (ticket_id, event) VALUES ($1, $2)", [
+      Number(id),
+      `assigned to ${body.agent}`,
+    ]);
+    return updated;
+  }
+}
+
+@Module({ controllers: [TicketsController] })
+class AppModule {}
+
+async function bootstrap() {
+  const app = await NestFactory.create(AppModule, { cors: true });
+  await app.listen(process.env.PORT || 4021);
+}
+bootstrap();

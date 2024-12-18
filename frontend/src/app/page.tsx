@@ -32,3 +32,12 @@ export default function SupportPortal() {
         <option value="resolved">resolved</option>
       </select>
       <ul>
+        {tickets.map((t) => (
+          <li key={t.id}>
+            <strong>#{t.id} {t.subject}</strong> [{t.priority}] — {t.status} (agent: {t.assigned_agent || "unassigned"})
+          </li>
+        ))}
+      </ul>
+    </main>
+  );
+}
