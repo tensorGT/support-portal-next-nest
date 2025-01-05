@@ -1,0 +1,37 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Ticket {
+  id            Int             @id @default(autoincrement())
+  customerEmail String
+  subject       String
+  status        String          @default("open")
+  priority      String          @default("normal")
+  assignedAgent String?
+  createdAt     DateTime        @default(now())
+  messages      TicketMessage[]
+  audits        TicketAudit[]
+}
+
+model TicketMessage {
+  id         Int      @id @default(autoincrement())
+  ticketId   Int
+  authorRole String
+  body       String
+  createdAt  DateTime @default(now())
+  ticket     Ticket   @relation(fields: [ticketId], references: [id], onDelete: Cascade)
+}
+
+model TicketAudit {
+  id        Int      @id @default(autoincrement())
+  ticketId  Int
+  event     String
+  createdAt DateTime @default(now())
+  ticket    Ticket   @relation(fields: [ticketId], references: [id], onDelete: Cascade)
+}
